@@ -21,3 +21,23 @@ export const createUser = async (
     }
   }
 };
+
+//Obtener el usuario en sesion
+export const getCurrentUser = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  // Usamos req.currentUserId que ha sido agregado por el middleware
+  User.findById(req.currentUserId)
+    .then((user) => {
+      if (!user) {
+        return next(createError(404, "User not found")); // Retorna el error si no se encuentra el usuario
+      } else {
+        res.json(user); // Devuelve la información del usuario
+      }
+    })
+    .catch((error) => {
+      next(error); // Maneja cualquier error que ocurra en la búsqueda
+    });
+};
